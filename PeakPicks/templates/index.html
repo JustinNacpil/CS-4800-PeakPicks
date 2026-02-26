@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PeakPicks</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>PeakPicks</h1>
+    <p class="tagline">Quickly pick the best option when there are too many choices.</p>
+
+    <div class="card">
+      <h2>What do you want to do?</h2>
+      <div class="links">
+        <a class="btn" href="/create">Create a pick</a>
+        <a class="btn" href="/picks">View picks</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Try a category</h2>
+      <form action="/picks" method="get" class="row">
+        <input name="category" placeholder="e.g., Headphones, Protein Powder, Laptops" />
+        <button class="btn" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

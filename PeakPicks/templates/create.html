@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Create Pick - PeakPicks</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1><a href="/">PeakPicks</a></h1>
+
+    <div class="card">
+      <h2>Create a pick</h2>
+
+      <form id="pickForm" class="form">
+        <label>Category *</label>
+        <input name="category" required placeholder="Headphones" />
+
+        <label>Item name *</label>
+        <input name="name" required placeholder="Sony WH-1000XM5" />
+
+        <label>Rank *</label>
+        <select name="rank" required>
+          <option value="">Choose</option>
+          <option>S</option><option>A</option><option>B</option><option>C</option><option>D</option>
+        </select>
+
+        <label>Reason (why it's ranked there)</label>
+        <textarea name="reason" rows="4" placeholder="Short explanation..."></textarea>
+
+        <label>Image URL (optional)</label>
+        <input name="image_url" placeholder="https://..." />
+
+        <label>Tags (comma separated)</label>
+        <input name="tags" placeholder="noise-canceling, comfy, best-value" />
+
+        <button class="btn" type="submit">Save</button>
+        <a class="btn secondary" href="/picks">View picks</a>
+
+        <p id="msg" class="msg"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
