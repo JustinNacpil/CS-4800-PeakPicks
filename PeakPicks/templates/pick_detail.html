@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ pick.name }} - PeakPicks{% endblock %}
+
+{% block content %}
+  <a href="/picks?category={{ pick.category|urlencode }}" class="btn btn-secondary btn-small" style="margin-bottom:1.5rem;">← Back to {{ pick.category }}</a>
+
+  <div class="detail-layout">
+    <div class="detail-main">
+      <div class="card" style="padding:2rem;">
+        <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+          <div class="pick-rank {{ pick.rank|lower }}" style="font-size:2.5rem; padding:0.5rem 1rem;">{{ pick.rank }}</div>
+          <div>
+            <h1 style="margin:0; font-size:2rem;">{{ pick.name }}</h1>
+            <div style="color:var(--accent-light); font-weight:600;">{{ pick.category }}</div>
+          </div>
+        </div>
+
+        {% if pick.image_url %}
+        <img src="{{ pick.image_url }}" alt="{{ pick.name }}" style="width:100%; max-height:400px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem;" onerror="this.style.display='none'">
+        {% endif %}
+
+        {% if pick.reason %}
+        <div style="margin:1.5rem 0; padding:1.25rem; background:rgba(99,102,241,0.1); border:1px solid rgba(129,140,248,0.3); border-radius:10px;">
+          <h3 style="margin-top:0; font-size:1rem; color:var(--text-secondary);">Why this rank?</h3>
+          <p style="margin:0; line-height:1.6;">{{ pick.reason }}</p>
+        </div>
+        {% endif %}
+
+        {% if pick.tags %}
+        <div class="pick-tags" style="margin:1rem 0;">
+          {% for tag in pick.tags %}<span class="tag">#{{ tag }}</span>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <span style="color:var(--text-secondary);">
+            by <a href="/profile/{{ pick.created_by_username }}" style="color:var(--accent-light); font-weight:600;">{{ pick.created_by_username }}</a>
+          </span>
+          <span style="color:var(--text-secondary);">{{ pick.likes }} likes</span>
+        </div>
+
+        <a href="/tierlist/{{ pick.category|urlencode }}" class="btn btn-secondary" style="margin-top:1.5rem;">View Full Tier List →</a>
+      </div>
+    </div>
+
+    <div class="detail-sidebar">
+      <h3>More in {{ pick.category }}</h3>
+      {% if related %}
+        {% for r in related %}
+        <a href="/pick/{{ r._id }}" class="related-pick">
+          <span class="pick-rank {{ r.rank|lower }}" style="font-size:0.9rem; padding:0.15rem 0.4rem;">{{ r.rank }}</span>
+          <span>{{ r.name }}</span>
+        </a>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--text-secondary);">No other picks yet.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

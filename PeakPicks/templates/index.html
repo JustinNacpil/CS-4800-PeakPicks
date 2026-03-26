@@ -1,30 +1,44 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>PeakPicks</title>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>PeakPicks</h1>
-    <p class="tagline">Quickly pick the best option when there are too many choices.</p>
+{% extends "base.html" %}
+{% block title %}PeakPicks - Rank Anything{% endblock %}
 
-    <div class="card">
-      <h2>What do you want to do?</h2>
-      <div class="links">
-        <a class="btn" href="/create">Create a pick</a>
-        <a class="btn" href="/picks">View picks</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Try a category</h2>
-      <form action="/picks" method="get" class="row">
-        <input name="category" placeholder="e.g., Headphones, Protein Powder, Laptops" />
-        <button class="btn" type="submit">Search</button>
-      </form>
+{% block content %}
+  <div style="text-align:center; margin:3rem 0 1rem;">
+    <h1 style="font-size:3rem; margin-bottom:0.5rem;">PeakPicks</h1>
+    <p class="tagline">Rank anything. Share your picks. Build tier lists with the community.</p>
+    <div style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap;">
+      <a href="/create" class="btn">📝 Create a Tier List</a>
+      <a href="/browse" class="btn btn-secondary">🔍 Browse All Tier Lists</a>
     </div>
   </div>
-</body>
-</html>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-value">{{ stats.total_tierlists }}</div>
+      <div class="stat-label">Tier Lists</div>
+    </div>
+    {% if current_user %}
+    <div class="stat-box">
+      <div class="stat-value" id="navTierlistCount">{{ stats.user_tierlists }}</div>
+      <div class="stat-label">Your Lists</div>
+    </div>
+    {% endif %}
+    <div class="stat-box">
+      <div class="stat-value">{{ stats.categories }}</div>
+      <div class="stat-label">Categories</div>
+    </div>
+  </div>
+
+  {% if stats.total_tierlists == 0 %}
+  <div class="card" style="text-align:center; padding:2rem; margin:2rem 0;">
+    <h3 style="margin-top:0;">No tier lists yet!</h3>
+    <p style="color:var(--text-secondary);">Seed the database with community tier lists to get started:</p>
+    <a href="/seed" class="btn" style="margin-top:1rem;">🌱 Seed Community Tier Lists</a>
+  </div>
+  {% endif %}
+
+  <h2 style="margin-top:3rem;">Browse Categories</h2>
+  <div class="category-grid" id="categoryCardsList"></div>
+
+  <h2 style="margin-top:3rem;">Recent Community Tier Lists</h2>
+  <div class="tierlists-grid" id="recentTierlistsList"></div>
+{% endblock %}

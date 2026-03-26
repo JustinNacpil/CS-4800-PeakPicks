@@ -1,30 +1,28 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Picks - PeakPicks</title>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1><a href="/">PeakPicks</a></h1>
+{% extends "base.html" %}
 
-    <div class="card">
-      <h2>Browse picks</h2>
+{% block title %}Browse Picks - PeakPicks{% endblock %}
 
-      <form id="filterForm" class="row">
-        <input id="category" name="category" placeholder="Filter by category" value="{{ category }}" />
-        <button class="btn" type="submit">Load</button>
-        <a class="btn secondary" href="/create">Create</a>
-      </form>
-    </div>
+{% block content %}
+  <h1>Browse Picks</h1>
+  <p class="tagline">Explore picks from the community</p>
 
-    <div id="list" class="grid"></div>
+  <div class="search-container">
+    <form class="row" style="gap: 0.75rem;">
+      <input
+        type="text"
+        id="filterCategory"
+        placeholder="Filter by category... (e.g., Movies, Games)"
+        value="{{ category }}"
+      >
+      <button type="button" id="searchBtn" class="btn btn-small">Search</button>
+    </form>
   </div>
 
+  <div class="grid" id="picksList"></div>
+{% endblock %}
+
+{% block scripts %}
   <script>
-    const initialCategory = {{ category|tojson }};
+    const initialCategory = "{{ category }}";
   </script>
-  <script src="/static/app.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PeakPicks{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4">
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="/" class="logo">🏔️ PeakPicks</a>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/browse">Browse</a></li>
+          <li><a href="/create">Create</a></li>
+          {% if current_user %}
+            <li><a href="/profile/{{ current_user.username }}">Profile</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="nav-right">
+        {% if current_user %}
+          <div class="user-info">
+            <span class="username">{{ current_user.username }}</span>
+            <a href="/logout" class="btn btn-small btn-secondary">Logout</a>
+          </div>
+        {% else %}
+          <a href="/login" class="btn btn-small">Login</a>
+          <a href="/register" class="btn btn-small btn-secondary">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container">
+        {% for cat, msg in messages %}
+          <div class="message {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Pick Detail Modal (legacy) -->
+  <div id="pickModal" class="modal-overlay" style="display:none;" onclick="closeModalOutside(event)">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <button class="modal-nav modal-prev" onclick="navigateModal(-1)">&#8249;</button>
+      <button class="modal-nav modal-next" onclick="navigateModal(1)">&#8250;</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Guest signup prompt -->
+  <div id="guestBanner" class="guest-banner" style="display:none;">
+    <div class="guest-banner-text">
+      <strong>Creating as guest!</strong> Sign up to save your tier lists permanently.
+    </div>
+    <a href="/register" class="btn btn-small">Sign Up Free</a>
+    <button class="guest-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}?v=4"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

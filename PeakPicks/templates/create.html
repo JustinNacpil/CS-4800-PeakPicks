@@ -1,47 +1,343 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Create Pick - PeakPicks</title>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1><a href="/">PeakPicks</a></h1>
+{% extends "base.html" %}
 
-    <div class="card">
-      <h2>Create a pick</h2>
+{% block title %}Create a Tier List - PeakPicks{% endblock %}
 
-      <form id="pickForm" class="form">
-        <label>Category *</label>
-        <input name="category" required placeholder="Headphones" />
+{% block content %}
+  <!-- STEP 1: Choose Category + Title -->
+  <div id="step1" class="create-step active">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1>Choose Your Category</h1>
+      <p class="tagline">Pick what you want to rank</p>
+    </div>
 
-        <label>Item name *</label>
-        <input name="name" required placeholder="Sony WH-1000XM5" />
+    <div class="type-grid">
+      <div class="type-card" data-category="Movies" onclick="selectType(this)">
+        <div class="type-icon">🎬</div>
+        <div class="type-name">Movies</div>
+        <div class="type-desc">Rank films from best to worst</div>
+      </div>
+      <div class="type-card" data-category="TV Shows" onclick="selectType(this)">
+        <div class="type-icon">📺</div>
+        <div class="type-name">TV Shows</div>
+        <div class="type-desc">Rate your favorite series</div>
+      </div>
+      <div class="type-card" data-category="Video Games" onclick="selectType(this)">
+        <div class="type-icon">🎮</div>
+        <div class="type-name">Video Games</div>
+        <div class="type-desc">Rank the best games</div>
+      </div>
+      <div class="type-card" data-category="Music Artists" onclick="selectType(this)">
+        <div class="type-icon">🎵</div>
+        <div class="type-name">Music Artists</div>
+        <div class="type-desc">Rank musicians & bands</div>
+      </div>
+      <div class="type-card" data-category="Anime" onclick="selectType(this)">
+        <div class="type-icon">⛩️</div>
+        <div class="type-name">Anime</div>
+        <div class="type-desc">Rank anime shows & films</div>
+      </div>
+      <div class="type-card" data-category="Food" onclick="selectType(this)">
+        <div class="type-icon">🍕</div>
+        <div class="type-name">Food</div>
+        <div class="type-desc">Rank dishes & restaurants</div>
+      </div>
+      <div class="type-card" data-category="Fast Food" onclick="selectType(this)">
+        <div class="type-icon">🍔</div>
+        <div class="type-name">Fast Food</div>
+        <div class="type-desc">Rank chains & menu items</div>
+      </div>
+      <div class="type-card" data-category="Sports" onclick="selectType(this)">
+        <div class="type-icon">⚽</div>
+        <div class="type-name">Sports</div>
+        <div class="type-desc">Rank athletes & teams</div>
+      </div>
+      <div class="type-card" data-category="Tech" onclick="selectType(this)">
+        <div class="type-icon">💻</div>
+        <div class="type-name">Tech</div>
+        <div class="type-desc">Rank gadgets & software</div>
+      </div>
+      <div class="type-card" data-category="Sneakers" onclick="selectType(this)">
+        <div class="type-icon">👟</div>
+        <div class="type-name">Sneakers</div>
+        <div class="type-desc">Rank brands & fits</div>
+      </div>
+      <div class="type-card" data-category="Cars" onclick="selectType(this)">
+        <div class="type-icon">🏎️</div>
+        <div class="type-name">Cars</div>
+        <div class="type-desc">Rank rides & brands</div>
+      </div>
+      <div class="type-card type-card-custom" data-category="custom" onclick="selectType(this)">
+        <div class="type-icon">✨</div>
+        <div class="type-name">Custom</div>
+        <div class="type-desc">Create your own category</div>
+      </div>
+    </div>
 
-        <label>Rank *</label>
-        <select name="rank" required>
-          <option value="">Choose</option>
-          <option>S</option><option>A</option><option>B</option><option>C</option><option>D</option>
-        </select>
+    <div id="customCategoryWrap" class="custom-category-wrap" style="display: none;">
+      <div class="form-group">
+        <label for="customCategory">Custom Category Name</label>
+        <input type="text" id="customCategory" placeholder="e.g., Best Pizza Toppings, Pokémon, Sneakers...">
+      </div>
+    </div>
 
-        <label>Reason (why it's ranked there)</label>
-        <textarea name="reason" rows="4" placeholder="Short explanation..."></textarea>
+    <!-- Title input (shown after picking a category) -->
+    <div id="titleInputWrap" class="title-input-wrap" style="display: none;">
+      <div class="form-group">
+        <label for="titleInput">Tier List Title <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+        <input type="text" id="titleInput" placeholder="e.g., My Movie Rankings" maxlength="80">
+      </div>
+    </div>
 
-        <label>Image URL (optional)</label>
-        <input name="image_url" placeholder="https://..." />
-
-        <label>Tags (comma separated)</label>
-        <input name="tags" placeholder="noise-canceling, comfy, best-value" />
-
-        <button class="btn" type="submit">Save</button>
-        <a class="btn secondary" href="/picks">View picks</a>
-
-        <p id="msg" class="msg"></p>
-      </form>
+    <div class="step-nav">
+      <div></div>
+      <button class="btn" id="toStep2Btn" onclick="goToStep(2)" disabled>
+        Next: Choose Style →
+      </button>
     </div>
   </div>
 
-  <script src="/static/app.js"></script>
-</body>
-</html>
+  <!-- STEP 2: Scale Type + Theme + Layout -->
+  <div id="step2" class="create-step">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1>Choose Your Style</h1>
+      <p class="tagline">Pick a scale type, color theme, and layout</p>
+    </div>
+
+    <h3 class="style-section-title">Scale Type</h3>
+    <div class="scale-grid">
+      <div class="scale-card selected" data-scale="classic" onclick="selectScale(this)">
+        <div class="scale-icon">📊</div>
+        <div class="scale-name">Classic S-Tier</div>
+        <div class="scale-tiers">
+          <div class="scale-tier-row">
+            <span class="scale-tier-label s">S</span>
+            <span class="scale-tier-label a">A</span>
+            <span class="scale-tier-label b">B</span>
+            <span class="scale-tier-label c">C</span>
+            <span class="scale-tier-label d">D</span>
+          </div>
+        </div>
+      </div>
+      <div class="scale-card" data-scale="worth_it" onclick="selectScale(this)">
+        <div class="scale-icon">💰</div>
+        <div class="scale-name">Worth It Scale</div>
+        <div class="scale-tiers">
+          <div class="scale-tier-row"><span class="scale-tier-label s">MUST BUY</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label a">WORTH IT</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label b">EH OKAY</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label c">NOT WORTH</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label d">TOTAL SCAM</span></div>
+        </div>
+      </div>
+      <div class="scale-card" data-scale="slider" onclick="selectScale(this)">
+        <div class="scale-icon">🎚️</div>
+        <div class="scale-name">Slider Scale</div>
+        <div class="scale-tiers">
+          <div class="scale-tier-row"><span class="scale-tier-label s">Amazing</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label a">Great</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label b">Good</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label c">Okay</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label d">Never</span></div>
+        </div>
+      </div>
+      <div class="scale-card" data-scale="bracket" onclick="selectScale(this)">
+        <div class="scale-icon">🏆</div>
+        <div class="scale-name">Bracket Battle</div>
+        <div class="scale-tiers">
+          <div class="scale-tier-row"><span class="scale-tier-label s">🥇 Champion</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label a">🥈 Runner-Up</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label b">🥉 Third</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label c">Fourth</span></div>
+          <div class="scale-tier-row"><span class="scale-tier-label d">Fifth</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="style-section-title" style="margin-top: 2rem;">Color Theme</h3>
+    <div class="theme-grid">
+      <div class="theme-card selected" data-theme="classic" onclick="selectTheme(this)">
+        <div class="theme-preview classic-preview">
+          <div class="tp-bar" style="background: #FFD700;"></div>
+          <div class="tp-bar" style="background: #FF4444;"></div>
+          <div class="tp-bar" style="background: #FF8C00;"></div>
+          <div class="tp-bar" style="background: #4CAF50;"></div>
+          <div class="tp-bar" style="background: #888;"></div>
+        </div>
+        <div class="theme-name">Classic</div>
+      </div>
+      <div class="theme-card" data-theme="neon" onclick="selectTheme(this)">
+        <div class="theme-preview neon-preview">
+          <div class="tp-bar" style="background: #FFE600;"></div>
+          <div class="tp-bar" style="background: #FF00FF;"></div>
+          <div class="tp-bar" style="background: #00FFFF;"></div>
+          <div class="tp-bar" style="background: #39FF14;"></div>
+          <div class="tp-bar" style="background: #BF00FF;"></div>
+        </div>
+        <div class="theme-name">Neon</div>
+      </div>
+      <div class="theme-card" data-theme="pastel" onclick="selectTheme(this)">
+        <div class="theme-preview pastel-preview">
+          <div class="tp-bar" style="background: #FFEAA7;"></div>
+          <div class="tp-bar" style="background: #FD79A8;"></div>
+          <div class="tp-bar" style="background: #FDCB6E;"></div>
+          <div class="tp-bar" style="background: #55EFC4;"></div>
+          <div class="tp-bar" style="background: #A29BFE;"></div>
+        </div>
+        <div class="theme-name">Pastel</div>
+      </div>
+      <div class="theme-card" data-theme="ocean" onclick="selectTheme(this)">
+        <div class="theme-preview ocean-preview">
+          <div class="tp-bar" style="background: #F9D71C;"></div>
+          <div class="tp-bar" style="background: #0077B6;"></div>
+          <div class="tp-bar" style="background: #00B4D8;"></div>
+          <div class="tp-bar" style="background: #90E0EF;"></div>
+          <div class="tp-bar" style="background: #CAF0F8;"></div>
+        </div>
+        <div class="theme-name">Ocean</div>
+      </div>
+      <div class="theme-card" data-theme="fire" onclick="selectTheme(this)">
+        <div class="theme-preview fire-preview">
+          <div class="tp-bar" style="background: #FFFFFF;"></div>
+          <div class="tp-bar" style="background: #FFEB3B;"></div>
+          <div class="tp-bar" style="background: #FF9800;"></div>
+          <div class="tp-bar" style="background: #F44336;"></div>
+          <div class="tp-bar" style="background: #4A0000;"></div>
+        </div>
+        <div class="theme-name">Fire</div>
+      </div>
+      <div class="theme-card" data-theme="monochrome" onclick="selectTheme(this)">
+        <div class="theme-preview mono-preview">
+          <div class="tp-bar" style="background: #FFFFFF;"></div>
+          <div class="tp-bar" style="background: #CCCCCC;"></div>
+          <div class="tp-bar" style="background: #999999;"></div>
+          <div class="tp-bar" style="background: #666666;"></div>
+          <div class="tp-bar" style="background: #333333;"></div>
+        </div>
+        <div class="theme-name">Monochrome</div>
+      </div>
+    </div>
+
+    <h3 class="style-section-title" style="margin-top: 2rem;">Layout Style</h3>
+    <div class="layout-grid">
+      <div class="layout-card selected" data-layout="rows" onclick="selectLayout(this)">
+        <div class="layout-preview">
+          <div class="lp-row"><div class="lp-label"></div><div class="lp-items"><div class="lp-item"></div><div class="lp-item"></div><div class="lp-item"></div></div></div>
+          <div class="lp-row"><div class="lp-label"></div><div class="lp-items"><div class="lp-item"></div><div class="lp-item"></div></div></div>
+          <div class="lp-row"><div class="lp-label"></div><div class="lp-items"><div class="lp-item"></div></div></div>
+        </div>
+        <div class="layout-name">Classic Rows</div>
+        <div class="layout-desc">Traditional tier rows with items side by side</div>
+      </div>
+      <div class="layout-card" data-layout="grid" onclick="selectLayout(this)">
+        <div class="layout-preview">
+          <div class="lp-grid">
+            <div class="lp-grid-item"></div><div class="lp-grid-item"></div><div class="lp-grid-item"></div>
+            <div class="lp-grid-item"></div><div class="lp-grid-item"></div><div class="lp-grid-item"></div>
+          </div>
+        </div>
+        <div class="layout-name">Card Grid</div>
+        <div class="layout-desc">Items shown as cards in a grid grouped by tier</div>
+      </div>
+      <div class="layout-card" data-layout="compact" onclick="selectLayout(this)">
+        <div class="layout-preview">
+          <div class="lp-compact"><div class="lp-compact-row"></div><div class="lp-compact-row"></div><div class="lp-compact-row"></div><div class="lp-compact-row"></div><div class="lp-compact-row"></div></div>
+        </div>
+        <div class="layout-name">Compact List</div>
+        <div class="layout-desc">Dense list view showing more items at once</div>
+      </div>
+      <div class="layout-card" data-layout="detailed" onclick="selectLayout(this)">
+        <div class="layout-preview">
+          <div class="lp-detailed"><div class="lp-detail-card"></div><div class="lp-detail-card"></div></div>
+        </div>
+        <div class="layout-name">Detailed Cards</div>
+        <div class="layout-desc">Large cards with images and descriptions</div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+      <button class="btn" onclick="goToStep(3)">Next: Add Items →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Add Items -->
+  <div id="step3" class="create-step">
+    <div style="text-align: center; margin-bottom: 1rem;">
+      <h1>Add Items</h1>
+      <p class="tagline">Add items to your <strong><span id="step3Category"></span></strong> tier list</p>
+    </div>
+
+    <div class="style-badge" id="styleBadge"></div>
+
+    <div style="max-width: 600px; margin: 1.5rem auto;">
+      <form id="createForm" class="card">
+        <input type="hidden" id="category" name="category">
+
+        <div class="form-group">
+          <label for="name">Item Name *</label>
+          <input type="text" id="name" name="name" placeholder="What are you ranking?" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>Tier Rank *</label>
+          <div class="tier-selector" id="tierSelector">
+            <button type="button" class="tier-btn tier-btn-s" data-rank="S" onclick="selectRank(this)">S</button>
+            <button type="button" class="tier-btn tier-btn-a" data-rank="A" onclick="selectRank(this)">A</button>
+            <button type="button" class="tier-btn tier-btn-b" data-rank="B" onclick="selectRank(this)">B</button>
+            <button type="button" class="tier-btn tier-btn-c" data-rank="C" onclick="selectRank(this)">C</button>
+            <button type="button" class="tier-btn tier-btn-d" data-rank="D" onclick="selectRank(this)">D</button>
+          </div>
+          <input type="hidden" id="rank" name="rank" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reason">Why this rank? <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+          <textarea id="reason" name="reason" placeholder="Explain your choice..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imageUrl">Image URL <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+          <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+          <img id="imagePreview" style="display:none; width:100%; max-height:160px; margin-top:0.75rem; border-radius:10px; object-fit:cover;">
+        </div>
+
+        <div class="form-group">
+          <label for="tags">Tags <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+          <input type="text" id="tags" name="tags" placeholder="action, sci-fi, recommended">
+        </div>
+
+        <div class="create-actions">
+          <button type="submit" class="btn" style="flex:1; justify-content:center;">
+            ➕ Add Item
+          </button>
+        </div>
+      </form>
+
+      <!-- Live preview of added items -->
+      <div id="addedItems" class="added-items-preview" style="display:none;">
+        <h3>Items Added</h3>
+        <div id="addedItemsList"></div>
+      </div>
+
+      <!-- Finish buttons (shown after first item added) -->
+      <div class="finish-btns" id="finishBtns">
+        <button id="finishPublishBtn" class="btn">✅ Publish Tier List</button>
+        <button id="saveDraftBtn" class="btn btn-secondary">💾 Save Draft</button>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="goToStep(2)">← Change Style</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator">
+    <div class="step-dot active" data-step="1">1</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="2">2</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="3">3</div>
+  </div>
+{% endblock %}

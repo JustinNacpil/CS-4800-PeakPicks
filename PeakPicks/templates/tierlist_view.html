@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{ tierlist.title }} - PeakPicks{% endblock %}
+
+{% block content %}
+  <!-- Header -->
+  <div class="tierlist-view-header">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <div class="tierlist-view-title">{{ tierlist.title }}</div>
+        <div class="tierlist-view-meta">
+          <span class="badge">📂 {{ tierlist.category }}</span>
+          <span class="badge" id="scaleBadge">{{ tierlist.scale_type }}</span>
+          <span>by <a href="/profile/{{ tierlist.created_by_username }}" style="color:var(--accent-light); font-weight:600;">{{ tierlist.created_by_username }}</a></span>
+        </div>
+      </div>
+      <div class="tierlist-view-actions">
+        <button class="like-btn {{ 'liked' if tierlist.liked_by_user else '' }}" id="tlLikeBtn"
+                onclick="handleLikeTierlist('{{ tierlist._id }}')">
+          {{ '❤️' if tierlist.liked_by_user else '🤍' }} <span id="tlLikeCount">{{ tierlist.likes }}</span>
+        </button>
+        {% if current_user and current_user.username == tierlist.created_by_username %}
+          <button class="btn btn-small btn-secondary" onclick="deleteTierlist('{{ tierlist._id }}')">🗑️ Delete</button>
+        {% endif %}
+        <a href="/browse?category={{ tierlist.category|urlencode }}" class="btn btn-small btn-secondary">← Browse</a>
+      </div>
+    </div>
+
+    <!-- Theme and layout controls -->
+    <div class="tierlist-controls" style="margin-top:1rem;">
+      <div class="control-group">
+        <label>Theme:</label>
+        <select id="themeSelect" onchange="applyTheme(this.value)">
+          <option value="classic">Classic</option>
+          <option value="neon">Neon</option>
+          <option value="pastel">Pastel</option>
+          <option value="ocean">Ocean</option>
+          <option value="fire">Fire</option>
+          <option value="monochrome">Monochrome</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Layout:</label>
+        <select id="layoutSelect" onchange="applyLayout(this.value)">
+          <option value="rows">Classic Rows</option>
+          <option value="grid">Card Grid</option>
+          <option value="compact">Compact List</option>
+          <option value="detailed">Detailed Cards</option>
+        </select>
+      </div>
+      <a href="/create" class="btn btn-small">➕ Create Your Own</a>
+    </div>
+  </div>
+
+  <!-- Tier list display -->
+  <div class="tierlist-view" id="tierlistContainer"
+       data-theme="{{ tierlist.theme }}"
+       data-layout="{{ tierlist.layout }}">
+    <div style="text-align:center;padding:2rem;">
+      <div class="loading" style="width:2rem;height:2rem;"></div>
+    </div>
+  </div>
+
+  {% if tierlist.picks | length == 0 %}
+  <div class="card" style="text-align:center; padding:2rem; margin-top:1rem;">
+    <p style="color:var(--text-secondary);">This tier list has no items yet.</p>
+    <a href="/create" class="btn" style="margin-top:1rem;">➕ Create Your Own</a>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const tierlists_data = {{ tierlist | tojson }};
+
+  // Set select values
+  document.addEventListener('DOMContentLoaded', () => {
+    const ts = document.getElementById('themeSelect');
+    const ls = document.getElementById('layoutSelect');
+    if (ts) ts.value = tierlists_data.theme || 'classic';
+    if (ls) ls.value = tierlists_data.layout || 'rows';
+
+    // Update scale badge text
+    const scaleBadge = document.getElementById('scaleBadge');
+    if (scaleBadge) {
+      const scaleInfo = SCALE_LABELS[tierlists_data.scale_type];
+      if (scaleInfo) scaleBadge.textContent = scaleInfo.icon + ' ' + scaleInfo.name;
+    }
+  });
+
+  async function handleLikeTierlist(id) {
+    const btn = document.getElementById('tlLikeBtn');
+    const countEl = document.getElementById('tlLikeCount');
+    const r = await apiRequest('/api/tierlists/' + id + '/like', 'POST');
+    if (r.ok) {
+      btn.classList.toggle('liked', r.data.liked);
+      btn.innerHTML = `${r.data.liked ? '❤️' : '🤍'} <span id="tlLikeCount">${r.data.likes_count}</span>`;
+    } else {
+      Toast.error(r.data.error || 'Login to like tier lists');
+    }
+  }
+
+  async function deleteTierlist(id) {
+    if (!confirm('Delete this tier list? This cannot be undone.')) return;
+    const r = await apiRequest('/api/tierlists/' + id, 'DELETE');
+    if (r.ok) {
+      Toast.success('Deleted!');
+      setTimeout(() => window.location.href = '/browse', 800);
+    } else {
+      Toast.error(r.data.error || 'Failed to delete');
+    }
+  }
+</script>
+{% endblock %}

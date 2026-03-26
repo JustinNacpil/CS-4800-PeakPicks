@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Login - PeakPicks{% endblock %}
+
+{% block content %}
+  <div class="auth-form">
+    <h2>Login</h2>
+
+    <div id="formError" class="message error" style="display:none;"></div>
+
+    <form id="loginForm" action="/login" method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="btn" style="width:100%; justify-content:center; margin-top:1rem;">Login</button>
+    </form>
+
+    <div class="divider">Don't have an account?</div>
+    <a href="/register" class="btn btn-secondary" style="width:100%; justify-content:center;">Create One</a>
+  </div>
+{% endblock %}

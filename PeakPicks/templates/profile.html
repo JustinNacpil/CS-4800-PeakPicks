@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.username }} - PeakPicks{% endblock %}
+
+{% block content %}
+  <div class="profile-header">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <div class="profile-avatar" id="profileAvatar"
+             {% if profile_user.avatar_color %}style="background: {{ profile_user.avatar_color }}"{% endif %}>
+          {{ profile_user.username[0]|upper }}
+        </div>
+        <div>
+          <div class="profile-username">{{ profile_user.username }}</div>
+          {% if profile_user.get('bio') %}
+            <div class="profile-bio">{{ profile_user.bio }}</div>
+          {% endif %}
+          <div style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.4rem;">
+            Joined {{ profile_user.get('created_at', '')[:10] if profile_user.get('created_at') else 'Recently' }}
+          </div>
+        </div>
+      </div>
+      {% if current_user and current_user.username == profile_user.username %}
+        <a href="/edit-profile" class="btn btn-small btn-secondary">✏️ Edit Profile</a>
+      {% endif %}
+    </div>
+
+    <div class="profile-meta" id="profileMeta" style="margin-top:1.5rem;">
+      <div class="profile-meta-item">
+        <div class="profile-meta-value" id="tierlistCount">0</div>
+        <div class="profile-meta-label">Tier Lists</div>
+      </div>
+      <div class="profile-meta-item">
+        <div class="profile-meta-value" id="categoryCount">0</div>
+        <div class="profile-meta-label">Categories</div>
+      </div>
+    </div>
+
+    {% if current_user and current_user.username == profile_user.username %}
+      <div style="margin-top:1.5rem;">
+        <a href="/create" class="btn">📝 Create Tier List</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <h2 style="margin:2rem 0 1rem;">Tier Lists</h2>
+  <div class="tierlists-grid" id="profileTierlists"></div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const profileUsername = {{ profile_user.username | tojson }};
+  </script>
+{% endblock %}

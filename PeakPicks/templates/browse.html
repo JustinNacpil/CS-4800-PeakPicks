@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Browse Tier Lists - PeakPicks{% endblock %}
+
+{% block content %}
+  <div class="browse-header">
+    <h1 style="margin:0;">Browse Tier Lists</h1>
+    <a href="/create" class="btn">📝 Create New</a>
+  </div>
+
+  <div class="search-container">
+    <div class="row">
+      <input type="text" id="filterCategory" placeholder="Filter by category (e.g. Movies, Anime...)"
+             value="{{ category }}">
+      <button class="btn" id="searchBtn">🔍 Search</button>
+    </div>
+  </div>
+
+  <div class="tierlists-grid" id="browseList">
+    <div style="text-align:center; padding:3rem; grid-column:1/-1;">
+      <div class="loading" style="width:2rem;height:2rem;"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    {% if category %}const initialCategory = {{ category | tojson }};{% endif %}
+  </script>
+{% endblock %}

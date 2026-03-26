@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile - PeakPicks{% endblock %}
+
+{% block content %}
+  <div class="edit-profile-card card">
+    <h1 style="text-align:center; margin-top:0;">Edit Profile</h1>
+
+    <div id="formError" style="display:none;" class="message error"></div>
+
+    <!-- Avatar preview -->
+    <div class="avatar-preview-section">
+      {% set colors = ['#6366f1','#ec4899','#14b8a6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#10b981','#f97316'] %}
+      <div class="avatar-preview-large" id="editAvatar"
+           style="background: {{ user.avatar_color if user.avatar_color else '#6366f1' }};">
+        {{ user.username[0]|upper }}
+      </div>
+      <div>
+        <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem; text-align:center;">Pick an avatar color</div>
+        <div class="avatar-colors">
+          {% for c in colors %}
+            <button class="avatar-color-btn {{ 'selected' if user.avatar_color == c else '' }}"
+                    data-color="{{ c }}"
+                    style="background: {{ c }};"
+                    title="{{ c }}"></button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <form id="editProfileForm">
+      <input type="hidden" id="avatarColor" value="{{ user.avatar_color or '' }}">
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username"
+               value="{{ user.username }}" minlength="3" maxlength="30" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bio">Bio <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+        <textarea id="bio" name="bio" placeholder="Tell the community about yourself..."
+                  maxlength="500" style="min-height:80px;">{{ user.bio or '' }}</textarea>
+        <div style="font-size:0.78rem; color:var(--text-secondary); text-align:right; margin-top:0.25rem;">
+          <span id="bioCharCount">{{ (user.bio or '')|length }}</span>/500
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+        <button type="submit" class="btn" style="flex:1; justify-content:center;">
+          💾 Save Changes
+        </button>
+        <a href="/profile/{{ user.username }}" class="btn btn-secondary" style="flex:1; justify-content:center; text-align:center;">
+          ← Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Character count for bio
+  const bioEl = document.getElementById('bio');
+  const bioCount = document.getElementById('bioCharCount');
+  if (bioEl && bioCount) {
+    bioEl.addEventListener('input', () => {
+      bioCount.textContent = bioEl.value.length;
+    });
+  }
+</script>
+{% endblock %}
